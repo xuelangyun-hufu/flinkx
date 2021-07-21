@@ -299,11 +299,11 @@
 <!--			<version>${flink.version}</version>-->
 <!--		</dependency>-->
 		<!-- DTStack package iceberg master branch end of efaad97 commit -->
-		<dependency>
-			<groupId>com.dtstack.iceberg</groupId>
-			<artifactId>iceberg-flink-runtime</artifactId>
-			<version>0.12.efaad97</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>com.dtstack.iceberg</groupId>-->
+<!--			<artifactId>iceberg-flink-runtime</artifactId>-->
+<!--			<version>0.12.efaad97</version>-->
+<!--		</dependency>-->
     </dependencies>
 
     <build>
