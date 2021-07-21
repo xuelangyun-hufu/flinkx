@@ -194,7 +194,8 @@ public class BinlogUtil {
     public static String getDataBaseByUrl(String jdbcUrl) {
         int idx = jdbcUrl.lastIndexOf('?');
         if (idx != -1) {
-            return StringUtils.substring(jdbcUrl, jdbcUrl.lastIndexOf('/') + 1, idx);
+            String url = StringUtils.substring(jdbcUrl, 0, idx);
+            return StringUtils.substring(url, url.lastIndexOf("/") + 1);
         } else {
             return StringUtils.substring(jdbcUrl, jdbcUrl.lastIndexOf('/') + 1);
         }
