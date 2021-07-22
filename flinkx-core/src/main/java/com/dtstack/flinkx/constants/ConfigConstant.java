@@ -115,8 +115,14 @@ public class ConfigConstant {
     /**cp目录*/
     public static final String CHECKPOINTS_DIRECTORY_KEY = "state.checkpoints.dir";
 
+    /** cp保留份数 */
+    public static final String CHECKPOINTS_NUM_RETAINED_KEY = "state.checkpoints.num-retained";
+
     /**是否增量cp，rocksdb支持*/
     public static final String STATE_BACKEND_INCREMENTAL_KEY = "state.backend.incremental";
+
+    /**sp目录，local模式不支持*/
+    public static final String SAVEPOINTS_DIRECTORY_KEY= "state.savepoints.dir";
 
     /**状态存活最小时间*/
     public static final String SQL_TTL_MINTIME = "sql.ttl.min";

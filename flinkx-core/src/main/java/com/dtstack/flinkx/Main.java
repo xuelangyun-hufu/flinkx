@@ -104,7 +104,7 @@ public class Main {
         String job = URLDecoder.decode(options.getJob(), Charsets.UTF_8.name());
         Properties confProperties = PropertiesUtil.parseConf(options.getConfProp());
 
-        StreamExecutionEnvironment env = createStreamExecutionEnvironment(options);
+        StreamExecutionEnvironment env = createStreamExecutionEnvironment(options, confProperties);
         StreamTableEnvironment tableEnv = createStreamTableEnvironment(env);
         configStreamExecutionEnvironment(tableEnv, confProperties, options.getJobName());
 
@@ -131,6 +131,7 @@ public class Main {
      * @param job
      * @param options
      * @param confProperties
+     *
      * @throws Exception
      */
     private static void exeSqlJob(StreamExecutionEnvironment env, StreamTableEnvironment tableEnv, String job, Options options, Properties confProperties) throws Exception {
@@ -157,6 +158,7 @@ public class Main {
      * @param job
      * @param options
      * @param confProperties
+     *
      * @throws Exception
      */
     private static void exeSyncJob(StreamExecutionEnvironment env, StreamTableEnvironment tableEnv, String job, Options options, Properties confProperties) throws Exception {
@@ -203,9 +205,10 @@ public class Main {
      * @param tableEnv
      * @param config
      * @param sourceDataStream
+     *
      * @return
      */
-    private static DataStream<RowData> syncStreamToTable( StreamTableEnvironment tableEnv, SyncConf config, DataStream<RowData> sourceDataStream) {
+    private static DataStream<RowData> syncStreamToTable(StreamTableEnvironment tableEnv, SyncConf config, DataStream<RowData> sourceDataStream) {
         String fieldNames = String.join(ConstantValue.COMMA_SYMBOL, config.getReader().getFieldNameList());
         List<Expression> expressionList = ExpressionParser.parseExpressionList(fieldNames);
         Table sourceTable = tableEnv.fromDataStream(sourceDataStream, expressionList.toArray(new Expression[0]));
@@ -243,6 +246,7 @@ public class Main {
      *
      * @param job
      * @param options
+     *
      * @return
      */
     public static SyncConf parseFlinkxConf(String job, Options options) {
@@ -258,7 +262,7 @@ public class Main {
                 config.setRemotePluginPath(options.getRemotePluginPath());
             }
 
-            if(StringUtils.isNotBlank(options.getS())){
+            if (StringUtils.isNotBlank(options.getS())) {
                 config.setRestorePath(options.getS());
             }
         } catch (Exception e) {
@@ -271,13 +275,18 @@ public class Main {
      * 创建StreamExecutionEnvironment
      *
      * @param options
+     *
      * @return
      */
-    private static StreamExecutionEnvironment createStreamExecutionEnvironment(Options options) {
+    private static StreamExecutionEnvironment createStreamExecutionEnvironment(Options options, Properties confProperties) {
         Configuration flinkConf = new Configuration();
         if (StringUtils.isNotEmpty(options.getFlinkconf())) {
             flinkConf = GlobalConfiguration.loadConfiguration(options.getFlinkconf());
         }
+
+        final String numRetained = confProperties.getProperty(ConfigConstant.CHECKPOINTS_NUM_RETAINED_KEY, "1");
+        flinkConf.setString(ConfigConstant.CHECKPOINTS_NUM_RETAINED_KEY, numRetained);
+
         StreamExecutionEnvironment env;
         if (StringUtils.equalsIgnoreCase(ClusterMode.local.name(), options.getMode())) {
             env = new MyLocalStreamEnvironment(flinkConf);
@@ -291,6 +300,7 @@ public class Main {
      * 创建StreamTableEnvironment
      *
      * @param env StreamExecutionEnvironment
+     *
      * @return
      */
     private static StreamTableEnvironment createStreamTableEnvironment(StreamExecutionEnvironment env) {
@@ -323,7 +333,7 @@ public class Main {
             PluginUtil.registerPluginUrlToCachedFile(config, env);
             env.setParallelism(config.getSpeed().getChannel());
         } else {
-            Preconditions.checkArgument(ExecuteProcessHelper.checkRemoteSqlPluginPath( options.getRemotePluginPath(), options.getMode(), options.getPluginLoadMode()), "Non-local mode or shipfile deployment mode, remoteSqlPluginPath is required");
+            Preconditions.checkArgument(ExecuteProcessHelper.checkRemoteSqlPluginPath(options.getRemotePluginPath(), options.getMode(), options.getPluginLoadMode()), "Non-local mode or shipfile deployment mode, remoteSqlPluginPath is required");
             FactoryUtil.setLocalPluginPath(options.getPluginRoot());
             FactoryUtil.setRemotePluginPath(options.getRemotePluginPath());
             FactoryUtil.setPluginLoadMode(options.getPluginLoadMode());
@@ -372,6 +382,7 @@ public class Main {
      *
      * @param streamEnv
      * @param confProperties
+     *
      * @throws NoSuchMethodException
      * @throws InvocationTargetException
      * @throws IllegalAccessException
@@ -417,6 +428,7 @@ public class Main {
      *
      * @param env
      * @param properties
+     *
      * @return
      */
     private static void configCheckpoint(StreamExecutionEnvironment env, Properties properties) throws IOException {
