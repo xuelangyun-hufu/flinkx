@@ -325,7 +325,7 @@ public class Main {
         configEnvironment(env, properties);
         if (env instanceof MyLocalStreamEnvironment) {
             if (StringUtils.isNotEmpty(options.getS())) {
-                ((MyLocalStreamEnvironment) env).setSettings(SavepointRestoreSettings.forPath(options.getS()));
+                ((MyLocalStreamEnvironment) env).setSettings(SavepointRestoreSettings.forPath(options.getS(), StringUtils.isBlank(options.getAllowNonRestoredState()) ? false : Boolean.valueOf(options.getAllowNonRestoredState())));
             }
         }
 

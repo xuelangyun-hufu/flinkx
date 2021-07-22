@@ -76,6 +76,9 @@ public class Options {
     @OptionRequired(description = "savepoint path")
     private String s;
 
+    @OptionRequired(description = "savepoint allowNonRestoredState")
+    private String allowNonRestoredState;
+
     @OptionRequired(description = "plugin load mode, by classpath or shipfile")
     private String pluginLoadMode = "shipfile";
 
@@ -213,6 +216,14 @@ public class Options {
 
     public void setS(String s) {
         this.s = s;
+    }
+
+    public String getAllowNonRestoredState() {
+        return allowNonRestoredState;
+    }
+
+    public void setAllowNonRestoredState(String allowNonRestoredState) {
+        this.allowNonRestoredState = allowNonRestoredState;
     }
 
     public String getPluginLoadMode() {
